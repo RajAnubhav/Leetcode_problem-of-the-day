@@ -1,29 +1,37 @@
 class Solution:
     def numWays(self, steps:int, arrLen:int) -> int:
-        def dfs(steps, idx):
-            if idx-0 > steps:
-                return 0
-            
-            if idx >= arrLen or idx < 0:
-                return 0
-            
-            if steps == 0:
-                if idx == 0:
+        MOD = 10**9+7
+        has_cache = [[False]*(steps+1) for _ in range(steps+1)]
+        cache = [[None]*(steps+1) for _ in range(steps+1)]
+
+        # stepsLeft -> 0 to steps
+        # index -> 0 to steps
+        def count(stepsLeft, index):
+            if stepsLeft == 0:
+                if index == 0:
                     return 1
                 return 0
+
+            if stepsLeft < index:
+                # don't have enough steps to get back to 0
+                return 0
             
-            tmp = 0
-            tmp += dfs(steps-1, idx-1)
-            tmp += dfs(steps-1, idx)
-            tmp += dfs(steps-1, idx+1)
+            if has_cache[stepsLeft][index]:
+                return cache[stepsLeft][index]
+            
+            total = 0
+            if index-1 >= 0:
+                total += count(stepsLeft-1, index-1)
+            if index+1<arrLen:
+                total += count(stepsLeft-1, index+1)
+            total += count(stepsLeft-1, index)
 
-            return tmp%MOD
+            has_cache[stepsLeft][index] = True
+            cache[stepsLeft][index] = total%MOD
+            return total % MOD
         
-        MOD = 10**9+7
-
-        return dfs(steps, 0)
+        return count(steps, 0) % MOD
     
 sln = Solution()
-steps = 4
-arrLen = 2
+steps, arrLen = 3,2
 print(sln.numWays(steps, arrLen))
