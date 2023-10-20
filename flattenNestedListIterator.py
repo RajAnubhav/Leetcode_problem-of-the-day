@@ -1,6 +1,6 @@
 class NestedIterator:
     '''This is the question no. 341'''
-    def __init__(self, nestedList: [NestedInteger]):
+    def __init__(self, nestedList):
         self.stack = nestedList[::-1]
     
     def next(self) -> int:
